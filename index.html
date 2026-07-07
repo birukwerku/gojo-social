@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>ጎጆ - ማህበረሰብ</title>
+<title>ጎጆ</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Noto+Sans+Ethiopic:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -24,61 +24,69 @@
     background: var(--surface);
     color: var(--ink);
   }
-  header {
-    background: var(--greenDark);
-    padding: 1.75rem 1.5rem 2.25rem;
-    border-radius: 0 0 20px 20px;
-    color: #F5F2E9;
-  }
-  header h1 {
-    font-family: 'Fraunces', serif;
-    font-weight: 600;
-    font-size: 28px;
-    margin: 0;
-  }
-  header p { margin: 6px 0 0; font-size: 14px; color: #D7D2C2; }
-  main { max-width: 560px; margin: -1.25rem auto 0; padding: 0 1.25rem 3rem; }
-  .card {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 14px;
-    padding: 1rem 1.1rem;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 20px rgba(37,66,47,0.06);
-  }
-  textarea, input {
-    font-family: inherit;
+  .hidden { display: none !important; }
+  input, button, textarea { font-family: inherit; }
+  input {
     border: 0.5px solid var(--border);
     border-radius: 10px;
-    padding: 8px 12px;
+    padding: 10px 12px;
     font-size: 14px;
+    width: 100%;
   }
-  textarea { width: 100%; resize: none; }
-  button {
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    font-family: inherit;
-    font-size: 14px;
-  }
-  .btn-primary { background: var(--green); color: #fff; padding: 8px 16px; }
-  .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: default; }
-  .avatar {
-    border-radius: 50%;
-    color: #fff;
+  button { cursor: pointer; border: none; border-radius: 10px; font-family: inherit; }
+
+  #auth-screen {
+    min-height: 100vh;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    flex-shrink: 0;
+    padding: 2.5rem 1.5rem;
   }
-  .post {
-    background: var(--card);
-    border: 0.5px solid var(--border);
-    border-radius: 14px;
-    padding: 1rem 1.1rem;
-    margin-bottom: 12px;
+  .logo-mark {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: var(--greenDark);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 14px;
   }
+  .logo-mark svg { width: 34px; height: 34px; }
+  #auth-screen h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 26px; margin: 0; }
+  #auth-screen .tagline { color: var(--muted); font-size: 14px; margin: 4px 0 2rem; }
+  .auth-card {
+    background: var(--card); border: 0.5px solid var(--border); border-radius: 16px;
+    padding: 1.5rem; width: 100%; max-width: 360px;
+    box-shadow: 0 10px 30px rgba(37,66,47,0.08);
+  }
+  .auth-tabs { display: flex; border-radius: 10px; background: var(--surface); padding: 4px; margin-bottom: 1.25rem; }
+  .auth-tab {
+    flex: 1; text-align: center; padding: 8px; border-radius: 8px; font-size: 14px;
+    background: transparent; color: var(--muted);
+  }
+  .auth-tab.active { background: var(--card); color: var(--ink); font-weight: 500; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .field { margin-bottom: 12px; }
+  .field label { font-size: 13px; color: var(--muted); display: block; margin-bottom: 4px; }
+  .btn-primary { background: var(--green); color: #fff; padding: 11px; width: 100%; font-size: 14px; font-weight: 500; }
+  .btn-primary:disabled { background: var(--border); color: var(--muted); }
+  .auth-error { color: var(--coral); font-size: 13px; margin: 8px 0 0; min-height: 16px; }
+  .social-footer { margin-top: 2.5rem; display: flex; gap: 18px; }
+  .social-footer a { color: var(--muted); text-decoration: none; display: flex; align-items: center; justify-content: center;
+    width: 38px; height: 38px; border-radius: 50%; border: 0.5px solid var(--border); background: var(--card); }
+  .social-footer svg { width: 18px; height: 18px; }
+
+  #app-screen { min-height: 100vh; padding-bottom: 70px; }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    background: var(--greenDark); color: #F5F2E9;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+  }
+  .topbar .brand { display: flex; align-items: center; gap: 8px; font-family: 'Fraunces', serif; font-weight: 600; font-size: 19px; }
+  .topbar .brand svg { width: 24px; height: 24px; }
+  .topbar button { background: transparent; color: #F5F2E9; font-size: 13px; padding: 6px 10px; border: 0.5px solid rgba(245,242,233,0.3); border-radius: 8px; }
+
+  main.view { max-width: 560px; margin: 0 auto; padding: 1rem 1.1rem; }
+
+  .card { background: var(--card); border: 0.5px solid var(--border); border-radius: 14px; padding: 1rem 1.1rem; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(37,66,47,0.05); }
+  .avatar { border-radius: 50%; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
   .row { display: flex; gap: 10px; align-items: center; }
   .muted { color: var(--muted); font-size: 12px; }
   .actions { display: flex; gap: 18px; border-top: 0.5px solid var(--border); padding-top: 8px; margin-top: 8px; }
@@ -86,51 +94,127 @@
   .comment-box { margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); }
   .comment-line { display: flex; gap: 8px; margin-bottom: 8px; }
   .comment-bubble { font-size: 13px; background: var(--surface); border-radius: 10px; padding: 6px 10px; flex: 1; }
-  .name-modal {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
-    display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 10;
-  }
-  .name-modal .card { width: 100%; max-width: 320px; margin: 0; }
   .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 14px; }
+
+  .bottom-nav {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 6;
+    background: var(--card); border-top: 0.5px solid var(--border);
+    display: flex; justify-content: space-around; padding: 8px 0 10px;
+  }
+  .nav-btn { background: transparent; display: flex; flex-direction: column; align-items: center; gap: 3px; color: var(--muted); font-size: 10px; padding: 4px 8px; }
+  .nav-btn.active { color: var(--green); font-weight: 500; }
+  .nav-btn svg { width: 22px; height: 22px; }
+
+  .profile-header { text-align: center; padding: 1rem 0 1.5rem; }
+  .profile-header .avatar { width: 76px; height: 76px; font-size: 26px; margin: 0 auto 10px; }
+  .profile-header h2 { margin: 0; font-size: 19px; font-weight: 500; }
+  .profile-header p { margin: 4px 0 0; color: var(--muted); font-size: 13px; }
 </style>
 </head>
 <body>
 
-<div id="name-modal" class="name-modal" style="display:none;">
-  <div class="card">
-    <p class="muted" style="margin:0 0 8px;">ከመቀጠልህ በፊት፣ ስምህን ንገረን</p>
-    <div class="row">
-      <input id="name-input" placeholder="ስምህ" style="flex:1;" />
-      <button class="btn-primary" onclick="saveName()">ቀጥል</button>
+<div id="auth-screen">
+  <div class="logo-mark">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 11L12 4L21 11V20H14V14H10V20H3V11Z" stroke="#F5F2E9" stroke-width="1.6" stroke-linejoin="round"/></svg>
+  </div>
+  <h1>ጎጆ</h1>
+  <p class="tagline">ማህበረሰብ የሚገናኝበት ትንሽ ጎጆ</p>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchTab('login')">ግባ</button>
+      <button class="auth-tab" id="tab-register" onclick="switchTab('register')">ተመዝገብ</button>
     </div>
+
+    <div id="login-form">
+      <div class="field"><label>ኢሜይል</label><input id="login-email" type="email" placeholder="name@example.com" /></div>
+      <div class="field"><label>የይለፍ ቃል</label><input id="login-password" type="password" placeholder="••••••••" /></div>
+      <button class="btn-primary" onclick="doLogin()">ግባ</button>
+    </div>
+
+    <div id="register-form" class="hidden">
+      <div class="field"><label>ሙሉ ስም</label><input id="reg-name" type="text" placeholder="ስምህ" /></div>
+      <div class="field"><label>ኢሜይል</label><input id="reg-email" type="email" placeholder="name@example.com" /></div>
+      <div class="field"><label>የይለፍ ቃል</label><input id="reg-password" type="password" placeholder="ቢያንስ 6 ፊደል" /></div>
+      <button class="btn-primary" onclick="doRegister()">አካውንት ክፈት</button>
+    </div>
+
+    <p class="auth-error" id="auth-error"></p>
+  </div>
+
+  <div class="social-footer">
+    <a href="#" title="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 22v-8h3l1-4h-4V7c0-1 .3-2 2-2h2V1.1c-.4 0-1.6-.1-3-.1-3 0-5 1.8-5 5.1V10H5v4h4v8h4z"/></svg></a>
+    <a href="#" title="Telegram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 4L2 11l6 2 2 6 3-4 5 4 3-15z"/></svg></a>
+    <a href="#" title="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c2.7 0 3 0 4.1.1 1.1 0 1.8.2 2.2.4.6.2 1 .5 1.4.9.4.4.7.8.9 1.4.2.4.4 1.1.4 2.2.1 1.1.1 1.4.1 4.1s0 3-.1 4.1c0 1.1-.2 1.8-.4 2.2-.2.6-.5 1-.9 1.4-.4.4-.8.7-1.4.9-.4.2-1.1.4-2.2.4-1.1.1-1.4.1-4.1.1s-3 0-4.1-.1c-1.1 0-1.8-.2-2.2-.4-.6-.2-1-.5-1.4-.9-.4-.4-.7-.8-.9-1.4-.2-.4-.4-1.1-.4-2.2C2 15 2 14.7 2 12s0-3 .1-4.1c0-1.1.2-1.8.4-2.2.2-.6.5-1 .9-1.4.4-.4.8-.7 1.4-.9.4-.2 1.1-.4 2.2-.4C8 2 8.3 2 11 2h1zm0 3.6a6.4 6.4 0 100 12.8 6.4 6.4 0 000-12.8zm0 2a4.4 4.4 0 110 8.8 4.4 4.4 0 010-8.8zm6.7-2.2a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/></svg></a>
   </div>
 </div>
 
-<header>
-  <h1>ጎጆ</h1>
-  <p>ማህበረሰብ የሚገናኝበት ትንሽ ጎጆ</p>
-</header>
-
-<main>
-  <div class="card">
-    <div class="row" style="align-items:flex-start;">
-      <div id="my-avatar" class="avatar" style="width:36px;height:36px;font-size:13px;"></div>
-      <textarea id="draft" rows="2" placeholder="ምን እያሰብክ ነው?"></textarea>
+<div id="app-screen" class="hidden">
+  <div class="topbar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 11L12 4L21 11V20H14V14H10V20H3V11Z" stroke="#F5F2E9" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      ጎጆ
     </div>
-    <div style="display:flex; justify-content:flex-end; margin-top:10px;">
-      <button id="post-btn" class="btn-primary" onclick="handlePost()" disabled>ላክ</button>
-    </div>
+    <button onclick="doLogout()">ውጣ</button>
   </div>
 
-  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-    <span id="post-count" class="muted">እየጫነ ነው...</span>
-  </div>
+  <main class="view" id="view-home">
+    <div class="card">
+      <div class="row" style="align-items:flex-start;">
+        <div id="my-avatar" class="avatar" style="width:36px;height:36px;font-size:13px;"></div>
+        <textarea id="draft" rows="2" placeholder="ምን እያሰብክ ነው?" style="flex:1;border:0.5px solid var(--border);border-radius:10px;padding:8px 12px;font-size:14px;resize:none;"></textarea>
+      </div>
+      <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+        <button id="post-btn" class="btn-primary" style="width:auto;padding:8px 16px;" onclick="handlePost()" disabled>ላክ</button>
+      </div>
+    </div>
 
-  <div id="feed"></div>
-  <div id="empty" class="empty" style="display:none;">እስካሁን ምንም ልጥፍ የለም። የመጀመሪያውን ጻፍ!</div>
-</main>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+      <span id="post-count" class="muted">እየጫነ ነው...</span>
+    </div>
+
+    <div id="feed"></div>
+    <div id="empty" class="empty hidden">እስካሁን ምንም ልጥፍ የለም። የመጀመሪያውን ጻፍ!</div>
+  </main>
+
+  <main class="view hidden" id="view-profile">
+    <div class="profile-header">
+      <div id="profile-avatar" class="avatar"></div>
+      <h2 id="profile-name-display"></h2>
+      <p id="profile-email-display"></p>
+    </div>
+    <div class="card">
+      <p class="muted" style="margin:0 0 6px;">የእኔ ልጥፎች</p>
+    </div>
+    <div id="my-posts"></div>
+  </main>
+
+  <main class="view hidden" id="view-soon">
+    <div class="empty">ይህ ባህሪ በቅርቡ ይመጣል 🙂</div>
+  </main>
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-view="home" onclick="goTo('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 11L12 4L21 11V20H14V14H10V20H3V11Z"/></svg>
+      መነሻ
+    </button>
+    <button class="nav-btn" data-view="soon" onclick="goTo('soon')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/><path d="M14 15.5c3 0 5 1.7 5 4.5"/></svg>
+      ጓደኞች
+    </button>
+    <button class="nav-btn" data-view="soon" onclick="goTo('soon')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M12 3a6 6 0 00-6 6v4l-2 3h16l-2-3V9a6 6 0 00-6-6z"/><path d="M9.5 19a2.5 2.5 0 005 0"/></svg>
+      ማሳወቂያ
+    </button>
+    <button class="nav-btn" data-view="profile" onclick="goTo('profile')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="8" r="3.4"/><path d="M5 20c0-3.6 3-6 7-6s7 2.4 7 6"/></svg>
+      ፕሮፋይል
+    </button>
+  </div>
+</div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
   const firebaseConfig = {
@@ -143,10 +227,13 @@
     appId: "1:705416128263:web:b1c39b9572b3536af647a2"
   };
   firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
   const db = firebase.firestore();
   const postsRef = db.collection("posts");
+  const usersRef = db.collection("users");
 
-  let myName = localStorage.getItem("gojo-name") || "";
+  let currentUser = null;
+  let unsubscribeFeed = null;
 
   const AVATAR_COLORS = ["#3E6B4F", "#C98A3E", "#C1543A", "#25422F"];
   function avatarColor(name) {
@@ -174,25 +261,61 @@
     return d.innerHTML;
   }
 
-  function checkName() {
-    if (!myName) {
-      document.getElementById("name-modal").style.display = "flex";
-    } else {
-      renderMyAvatar();
-    }
+  function switchTab(tab) {
+    document.getElementById("tab-login").classList.toggle("active", tab === "login");
+    document.getElementById("tab-register").classList.toggle("active", tab === "register");
+    document.getElementById("login-form").classList.toggle("hidden", tab !== "login");
+    document.getElementById("register-form").classList.toggle("hidden", tab !== "register");
+    document.getElementById("auth-error").innerText = "";
   }
-  function saveName() {
-    const val = document.getElementById("name-input").value.trim();
-    if (!val) return;
-    myName = val;
-    localStorage.setItem("gojo-name", val);
-    document.getElementById("name-modal").style.display = "none";
-    renderMyAvatar();
+
+  function showAuthError(msg) {
+    document.getElementById("auth-error").innerText = msg;
   }
-  function renderMyAvatar() {
-    const el = document.getElementById("my-avatar");
-    el.style.background = avatarColor(myName || "?");
-    el.innerText = initials(myName);
+
+  const ERROR_MESSAGES = {
+    "auth/email-already-in-use": "ይህ ኢሜይል ቀድሞ ተመዝግቧል።",
+    "auth/invalid-email": "ኢሜይሉ ትክክል አይደለም።",
+    "auth/weak-password": "የይለፍ ቃሉ ቢያንስ 6 ፊደል መሆን አለበት።",
+    "auth/user-not-found": "ተጠቃሚ አልተገኘም።",
+    "auth/wrong-password": "የይለፍ ቃሉ ትክክል አይደለም።",
+    "auth/invalid-credential": "ኢሜይል ወይም የይለፍ ቃል ትክክል አይደለም።",
+  };
+
+  function doRegister() {
+    const name = document.getElementById("reg-name").value.trim();
+    const email = document.getElementById("reg-email").value.trim();
+    const password = document.getElementById("reg-password").value;
+    if (!name || !email || !password) { showAuthError("እባክህ ሁሉንም መስኮች ሙላ።"); return; }
+    showAuthError("");
+    auth.createUserWithEmailAndPassword(email, password)
+      .then((cred) => {
+        return cred.user.updateProfile({ displayName: name }).then(() => {
+          return usersRef.doc(cred.user.uid).set({ name, email, createdAt: Date.now() });
+        });
+      })
+      .catch((err) => showAuthError(ERROR_MESSAGES[err.code] || err.message));
+  }
+
+  function doLogin() {
+    const email = document.getElementById("login-email").value.trim();
+    const password = document.getElementById("login-password").value;
+    if (!email || !password) { showAuthError("እባክህ ኢሜይል እና የይለፍ ቃል አስገባ።"); return; }
+    showAuthError("");
+    auth.signInWithEmailAndPassword(email, password)
+      .catch((err) => showAuthError(ERROR_MESSAGES[err.code] || err.message));
+  }
+
+  function doLogout() {
+    auth.signOut();
+  }
+
+  function goTo(view) {
+    document.querySelectorAll(".view").forEach(v => v.classList.add("hidden"));
+    document.getElementById(`view-${view}`).classList.remove("hidden");
+    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(`.nav-btn[data-view="${view}"]`)[0]?.classList.add("active");
+    if (view === "profile") renderProfile();
   }
 
   document.getElementById("draft").addEventListener("input", (e) => {
@@ -200,11 +323,13 @@
   });
 
   function handlePost() {
+    if (!currentUser) return;
     const draftEl = document.getElementById("draft");
     const text = draftEl.value.trim();
     if (!text) return;
     postsRef.add({
-      author: myName || "ስም አልባ",
+      uid: currentUser.uid,
+      author: currentUser.displayName || "ስም አልባ",
       text: text,
       ts: Date.now(),
       likedBy: [],
@@ -215,7 +340,7 @@
   }
 
   function toggleLike(id, likedBy) {
-    const me = myName || "ስም አልባ";
+    const me = currentUser.uid;
     const liked = likedBy.includes(me);
     const next = liked ? likedBy.filter(n => n !== me) : [...likedBy, me];
     postsRef.doc(id).update({ likedBy: next });
@@ -227,7 +352,7 @@
     if (!text) return;
     postsRef.doc(id).update({
       comments: firebase.firestore.FieldValue.arrayUnion({
-        author: myName || "ስም አልባ",
+        author: currentUser.displayName || "ስም አልባ",
         text: text,
         ts: Date.now()
       })
@@ -243,8 +368,7 @@
   function renderPost(doc) {
     const p = doc.data();
     const id = doc.id;
-    const me = myName || "ስም አልባ";
-    const liked = (p.likedBy || []).includes(me);
+    const liked = currentUser && (p.likedBy || []).includes(currentUser.uid);
     const comments = p.comments || [];
     const commentsHtml = comments.map(c => `
       <div class="comment-line">
@@ -254,7 +378,7 @@
     `).join("");
 
     return `
-      <div class="post">
+      <div class="post card">
         <div class="row" style="margin-bottom:8px;">
           <div class="avatar" style="width:34px;height:34px;font-size:12px;background:${avatarColor(p.author)};">${initials(p.author)}</div>
           <div>
@@ -275,32 +399,72 @@
           ${commentsHtml}
           <div class="row" style="margin-top:6px;">
             <input id="comment-input-${id}" placeholder="አስተያየት ጻፍ..." style="flex:1;" onkeydown="if(event.key==='Enter') addComment('${id}')" />
-            <button class="btn-primary" style="background:var(--gold);color:#3A2A0F;" onclick="addComment('${id}')">ላክ</button>
+            <button style="background:var(--gold);color:#3A2A0F;padding:8px 12px;" onclick="addComment('${id}')">ላክ</button>
           </div>
         </div>
       </div>
     `;
   }
 
-  postsRef.orderBy("ts", "desc").onSnapshot((snapshot) => {
-    const feed = document.getElementById("feed");
-    const empty = document.getElementById("empty");
-    const count = document.getElementById("post-count");
-    if (snapshot.empty) {
-      feed.innerHTML = "";
-      empty.style.display = "block";
-      count.innerText = "0 ልጥፎች";
-    } else {
-      empty.style.display = "none";
-      feed.innerHTML = snapshot.docs.map(renderPost).join("");
-      count.innerText = `${snapshot.docs.length} ልጥፎች`;
-    }
-  }, (err) => {
-    document.getElementById("post-count").innerText = "ስህተት ተፈጥሯል - Firestore rules ን አረጋግጥ";
-    console.error(err);
-  });
+  function startFeedListener() {
+    if (unsubscribeFeed) unsubscribeFeed();
+    unsubscribeFeed = postsRef.orderBy("ts", "desc").onSnapshot((snapshot) => {
+      const feed = document.getElementById("feed");
+      const empty = document.getElementById("empty");
+      const count = document.getElementById("post-count");
+      if (snapshot.empty) {
+        feed.innerHTML = "";
+        empty.classList.remove("hidden");
+        count.innerText = "0 ልጥፎች";
+      } else {
+        empty.classList.add("hidden");
+        feed.innerHTML = snapshot.docs.map(renderPost).join("");
+        count.innerText = `${snapshot.docs.length} ልጥፎች`;
+      }
+    }, (err) => {
+      document.getElementById("post-count").innerText = "ስህተት ተፈጥሯል";
+      console.error(err);
+    });
+  }
 
-  checkName();
+  function renderProfile() {
+    if (!currentUser) return;
+    const nameEl = document.getElementById("profile-name-display");
+    const emailEl = document.getElementById("profile-email-display");
+    const avatarEl = document.getElementById("profile-avatar");
+    nameEl.innerText = currentUser.displayName || "ስም አልባ";
+    emailEl.innerText = currentUser.email || "";
+    avatarEl.style.background = avatarColor(currentUser.displayName || "?");
+    avatarEl.innerText = initials(currentUser.displayName);
+
+    postsRef.where("uid", "==", currentUser.uid).orderBy("ts", "desc").get().then((snap) => {
+      const container = document.getElementById("my-posts");
+      container.innerHTML = snap.empty
+        ? '<div class="empty">ገና ምንም ልጥፍ የለህም።</div>'
+        : snap.docs.map(renderPost).join("");
+    });
+  }
+
+  function renderMyAvatar() {
+    const el = document.getElementById("my-avatar");
+    el.style.background = avatarColor(currentUser.displayName || "?");
+    el.innerText = initials(currentUser.displayName);
+  }
+
+  auth.onAuthStateChanged((user) => {
+    currentUser = user;
+    if (user) {
+      document.getElementById("auth-screen").classList.add("hidden");
+      document.getElementById("app-screen").classList.remove("hidden");
+      renderMyAvatar();
+      startFeedListener();
+      goTo("home");
+    } else {
+      document.getElementById("app-screen").classList.add("hidden");
+      document.getElementById("auth-screen").classList.remove("hidden");
+      if (unsubscribeFeed) { unsubscribeFeed(); unsubscribeFeed = null; }
+    }
+  });
 </script>
 </body>
 </html>
