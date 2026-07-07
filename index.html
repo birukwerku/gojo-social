@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ጎጆ - ማህበረሰብ</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Noto+Sans+Ethiopic:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #20261F;
+    --surface: #FAF8F3;
+    --card: #FFFFFF;
+    --border: #E4E0D6;
+    --green: #3E6B4F;
+    --greenDark: #25422F;
+    --gold: #C98A3E;
+    --coral: #C1543A;
+    --muted: #7A7669;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Noto Sans Ethiopic', -apple-system, sans-serif;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  header {
+    background: var(--greenDark);
+    padding: 1.75rem 1.5rem 2.25rem;
+    border-radius: 0 0 20px 20px;
+    color: #F5F2E9;
+  }
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 28px;
+    margin: 0;
+  }
+  header p { margin: 6px 0 0; font-size: 14px; color: #D7D2C2; }
+  main { max-width: 560px; margin: -1.25rem auto 0; padding: 0 1.25rem 3rem; }
+  .card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 20px;
+    box-shadow: 0 6px 20px rgba(37,66,47,0.06);
+  }
+  textarea, input {
+    font-family: inherit;
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+  textarea { width: 100%; resize: none; }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 14px;
+  }
+  .btn-primary { background: var(--green); color: #fff; padding: 8px 16px; }
+  .btn-primary:disabled { background: var(--border); color: var(--muted); cursor: default; }
+  .avatar {
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .post {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1rem 1.1rem;
+    margin-bottom: 12px;
+  }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .muted { color: var(--muted); font-size: 12px; }
+  .actions { display: flex; gap: 18px; border-top: 0.5px solid var(--border); padding-top: 8px; margin-top: 8px; }
+  .action-btn { display: flex; align-items: center; gap: 5px; background: transparent; color: var(--muted); font-size: 13px; padding: 0; }
+  .comment-box { margin-top: 10px; padding-top: 10px; border-top: 0.5px solid var(--border); }
+  .comment-line { display: flex; gap: 8px; margin-bottom: 8px; }
+  .comment-bubble { font-size: 13px; background: var(--surface); border-radius: 10px; padding: 6px 10px; flex: 1; }
+  .name-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.45);
+    display: flex; align-items: center; justify-content: center; padding: 1.5rem; z-index: 10;
+  }
+  .name-modal .card { width: 100%; max-width: 320px; margin: 0; }
+  .empty { text-align: center; padding: 2.5rem 1rem; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<div id="name-modal" class="name-modal" style="display:none;">
+  <div class="card">
+    <p class="muted" style="margin:0 0 8px;">ከመቀጠልህ በፊት፣ ስምህን ንገረን</p>
+    <div class="row">
+      <input id="name-input" placeholder="ስምህ" style="flex:1;" />
+      <button class="btn-primary" onclick="saveName()">ቀጥል</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <h1>ጎጆ</h1>
+  <p>ማህበረሰብ የሚገናኝበት ትንሽ ጎጆ</p>
+</header>
+
+<main>
+  <div class="card">
+    <div class="row" style="align-items:flex-start;">
+      <div id="my-avatar" class="avatar" style="width:36px;height:36px;font-size:13px;"></div>
+      <textarea id="draft" rows="2" placeholder="ምን እያሰብክ ነው?"></textarea>
+    </div>
+    <div style="display:flex; justify-content:flex-end; margin-top:10px;">
+      <button id="post-btn" class="btn-primary" onclick="handlePost()" disabled>ላክ</button>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+    <span id="post-count" class="muted">እየጫነ ነው...</span>
+  </div>
+
+  <div id="feed"></div>
+  <div id="empty" class="empty" style="display:none;">እስካሁን ምንም ልጥፍ የለም። የመጀመሪያውን ጻፍ!</div>
+</main>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBKJ9vAyoIt7YxM_2YQV0jpCdTfmcq3FC0",
+    authDomain: "gojo-social.firebaseapp.com",
+    databaseURL: "https://gojo-social-default-rtdb.firebaseio.com",
+    projectId: "gojo-social",
+    storageBucket: "gojo-social.firebasestorage.app",
+    messagingSenderId: "705416128263",
+    appId: "1:705416128263:web:b1c39b9572b3536af647a2"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const postsRef = db.collection("posts");
+
+  let myName = localStorage.getItem("gojo-name") || "";
+
+  const AVATAR_COLORS = ["#3E6B4F", "#C98A3E", "#C1543A", "#25422F"];
+  function avatarColor(name) {
+    let h = 0;
+    for (let i = 0; i < (name || "").length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+    return AVATAR_COLORS[h % AVATAR_COLORS.length];
+  }
+  function initials(name) {
+    const parts = (name || "?").trim().split(" ").filter(Boolean);
+    if (parts.length === 0) return "?";
+    return (parts[0][0] + (parts[1] ? parts[1][0] : "")).toUpperCase();
+  }
+  function timeAgo(ts) {
+    const diff = Math.max(0, Date.now() - ts);
+    const min = Math.floor(diff / 60000);
+    if (min < 1) return "አሁን";
+    if (min < 60) return `${min} ደቂቃ በፊት`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr} ሰዓት በፊት`;
+    return `${Math.floor(hr / 24)} ቀን በፊት`;
+  }
+  function escapeHtml(s) {
+    const d = document.createElement("div");
+    d.innerText = s;
+    return d.innerHTML;
+  }
+
+  function checkName() {
+    if (!myName) {
+      document.getElementById("name-modal").style.display = "flex";
+    } else {
+      renderMyAvatar();
+    }
+  }
+  function saveName() {
+    const val = document.getElementById("name-input").value.trim();
+    if (!val) return;
+    myName = val;
+    localStorage.setItem("gojo-name", val);
+    document.getElementById("name-modal").style.display = "none";
+    renderMyAvatar();
+  }
+  function renderMyAvatar() {
+    const el = document.getElementById("my-avatar");
+    el.style.background = avatarColor(myName || "?");
+    el.innerText = initials(myName);
+  }
+
+  document.getElementById("draft").addEventListener("input", (e) => {
+    document.getElementById("post-btn").disabled = !e.target.value.trim();
+  });
+
+  function handlePost() {
+    const draftEl = document.getElementById("draft");
+    const text = draftEl.value.trim();
+    if (!text) return;
+    postsRef.add({
+      author: myName || "ስም አልባ",
+      text: text,
+      ts: Date.now(),
+      likedBy: [],
+      comments: []
+    });
+    draftEl.value = "";
+    document.getElementById("post-btn").disabled = true;
+  }
+
+  function toggleLike(id, likedBy) {
+    const me = myName || "ስም አልባ";
+    const liked = likedBy.includes(me);
+    const next = liked ? likedBy.filter(n => n !== me) : [...likedBy, me];
+    postsRef.doc(id).update({ likedBy: next });
+  }
+
+  function addComment(id) {
+    const input = document.getElementById(`comment-input-${id}`);
+    const text = input.value.trim();
+    if (!text) return;
+    postsRef.doc(id).update({
+      comments: firebase.firestore.FieldValue.arrayUnion({
+        author: myName || "ስም አልባ",
+        text: text,
+        ts: Date.now()
+      })
+    });
+    input.value = "";
+  }
+
+  function toggleComments(id) {
+    const box = document.getElementById(`comments-${id}`);
+    box.style.display = box.style.display === "none" ? "block" : "none";
+  }
+
+  function renderPost(doc) {
+    const p = doc.data();
+    const id = doc.id;
+    const me = myName || "ስም አልባ";
+    const liked = (p.likedBy || []).includes(me);
+    const comments = p.comments || [];
+    const commentsHtml = comments.map(c => `
+      <div class="comment-line">
+        <div class="avatar" style="width:24px;height:24px;font-size:10px;background:${avatarColor(c.author)};">${initials(c.author)}</div>
+        <div class="comment-bubble"><b>${escapeHtml(c.author)}</b> ${escapeHtml(c.text)}</div>
+      </div>
+    `).join("");
+
+    return `
+      <div class="post">
+        <div class="row" style="margin-bottom:8px;">
+          <div class="avatar" style="width:34px;height:34px;font-size:12px;background:${avatarColor(p.author)};">${initials(p.author)}</div>
+          <div>
+            <div style="font-size:14px;font-weight:500;">${escapeHtml(p.author)}</div>
+            <div class="muted">${timeAgo(p.ts)}</div>
+          </div>
+        </div>
+        <p style="font-size:15px;line-height:1.6;margin:0 0 10px;">${escapeHtml(p.text)}</p>
+        <div class="actions">
+          <button class="action-btn" style="color:${liked ? 'var(--coral)' : 'var(--muted)'};" onclick='toggleLike("${id}", ${JSON.stringify(p.likedBy || [])})'>
+            ♥ ${(p.likedBy || []).length > 0 ? p.likedBy.length : "ውደድ"}
+          </button>
+          <button class="action-btn" onclick="toggleComments('${id}')">
+            💬 ${comments.length > 0 ? comments.length : "አስተያየት"}
+          </button>
+        </div>
+        <div id="comments-${id}" class="comment-box" style="display:none;">
+          ${commentsHtml}
+          <div class="row" style="margin-top:6px;">
+            <input id="comment-input-${id}" placeholder="አስተያየት ጻፍ..." style="flex:1;" onkeydown="if(event.key==='Enter') addComment('${id}')" />
+            <button class="btn-primary" style="background:var(--gold);color:#3A2A0F;" onclick="addComment('${id}')">ላክ</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  postsRef.orderBy("ts", "desc").onSnapshot((snapshot) => {
+    const feed = document.getElementById("feed");
+    const empty = document.getElementById("empty");
+    const count = document.getElementById("post-count");
+    if (snapshot.empty) {
+      feed.innerHTML = "";
+      empty.style.display = "block";
+      count.innerText = "0 ልጥፎች";
+    } else {
+      empty.style.display = "none";
+      feed.innerHTML = snapshot.docs.map(renderPost).join("");
+      count.innerText = `${snapshot.docs.length} ልጥፎች`;
+    }
+  }, (err) => {
+    document.getElementById("post-count").innerText = "ስህተት ተፈጥሯል - Firestore rules ን አረጋግጥ";
+    console.error(err);
+  });
+
+  checkName();
+</script>
+</body>
+</html>
